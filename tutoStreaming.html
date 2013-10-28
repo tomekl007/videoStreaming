@@ -8,10 +8,10 @@
 <body>
 	<video autoplay width=1280 height=720></video>
 	<canvas id='miCanvas' width='800' height='600'></canvas>
-	<script src="http://localhost:8080/socket.io/socket.io.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		var bandera=0;
-		var websocket = io.connect("http://localhost:8080");
+		var websocket = io.connect();
 		window.URL = window.URL || window.webkitURL;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
@@ -29,11 +29,17 @@
 				window.setTimeout(callback, 1000 / 1000);//10 frames per second
 			};
 		})();
+		var i = 0;
 		function dFrame(ctx,video,canvas)
 		{
 			ctx.drawImage(video,0,0);
 			var dataURL = canvas.toDataURL('image/jpeg',0.2);
-			if(bandera!=0) websocket.emit('newFrame',dataURL);
+			if(bandera!=0){
+				console.log("--> socket will emit data : " + i );
+		        i++;
+				websocket.emit('newFrame',dataURL);
+
+				}
 			requestAnimFrame(function(){
 				dFrame(ctx,video,canvas);
 			});
